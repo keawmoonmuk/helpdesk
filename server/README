@@ -1,0 +1,7 @@
+success endpont
+1.register
+2.login
+3. repairRequest การแจ้งซ่อมใหม่
+4. editRepair การแก้ไขแจ้งซ่อม
+5. deleteRepair การลบแจ้งซ่อม
+6. getRepair ดึงข้อมูลการแจ้งซ่อม

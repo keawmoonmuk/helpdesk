@@ -1,0 +1,506 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "title": "System API",
+      "version": "1.0.0",
+      "description": "API documentation for the system endpoints"
+    },
+    "paths": {
+        "/auth/register": {
+          "post": {
+            "summary": "ลงทะเบียนผู้ใช้งาน",
+            "tags": ["Auth"],
+            "requestBody": {
+              "required": true,
+              "content": {
+                "application/json": {
+                  "schema": { "$ref": "#/components/schemas/RegisterRequest" }
+                }
+              }
+            },
+            "responses": {
+              "201": { "description": "User registered successfully" },
+              "400": { "description": "Bad request" }
+            }
+          }
+        },
+        "/auth/login": {
+          "post": {
+            "summary": "ลงชื่อเข้าใช้งาน",
+            "tags": ["Auth"],
+            "requestBody": {
+              "required": true,
+              "content": {
+                "application/json": {
+                  "schema": { "$ref": "#/components/schemas/LoginRequest" }
+                }
+              }
+            },
+            "responses": {
+              "200": {
+                "description": "User logged in successfully",
+                "content": {
+                  "application/json": {
+                    "schema": { "$ref": "#/components/schemas/LoginResponse" }
+                  }
+                }
+              },
+              "400": { "description": "Invalid credentials" }
+            }
+          }
+        },
+        "/dashboard/user": {
+          "get": {
+            "summary": "User Dashboard",
+            "tags": ["Dashboard"],
+            "security": [{ "BearerAuth": [] }],
+            "responses": {
+              "200": { "description": "User Dashboard Data" },
+              "404": { "description": "User not found" }
+            }
+          }
+        },
+        "/dashboard/technician": {
+          "get": {
+            "summary": "Technician Dashboard",
+            "tags": ["Dashboard"],
+            "security": [{ "BearerAuth": [] }],
+            "responses": {
+              "200": { "description": "Technician Dashboard Data" },
+              "404": { "description": "Technician not found" }
+            }
+          }
+        },
+        "/dashboard/admin": {
+          "get": {
+            "summary": "Admin Dashboard",
+            "tags": ["Dashboard"],
+            "security": [{ "BearerAuth": [] }],
+            "responses": {
+              "200": { "description": "Admin Dashboard Data" },
+              "500": { "description": "Server error" }
+            }
+          }
+        },
+        "/repair/create": {
+          "post": {
+            "summary": "Create a repair request",
+            "tags": ["Repair"],
+            "security": [{ "BearerAuth": [] }],
+            "requestBody": {
+              "required": true,
+              "content": {
+                "application/json": {
+                  "schema": { "$ref": "#/components/schemas/AddRepairRequest" }
+                }
+              }
+            },
+            "responses": {
+              "201": { "description": "Repair request created successfully" },
+              "400": { "description": "Bad request" }
+            }
+          }
+        },
+        "/repair/list": {
+          "get": {
+            "summary": "Get all repair requests",
+            "tags": ["Repair"],
+            "security": [{ "BearerAuth": [] }],
+            "responses": {
+              "200": { "description": "List of repair requests" },
+              "500": { "description": "Server error" }
+            }
+          }
+        },
+        "/repair/edit/{id}": {
+          "put": {
+            "summary": "Edit a repair request",
+            "tags": ["Repair"],
+            "security": [{ "BearerAuth": [] }],
+            "parameters": [
+              { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+            ],
+            "requestBody": {
+              "required": true,
+              "content": {
+                "application/json": {
+                  "schema": { "$ref": "#/components/schemas/EditRepairRequest" }
+                }
+              }
+            },
+            "responses": {
+              "200": { "description": "Repair request updated successfully" },
+              "400": { "description": "Bad request" },
+              "404": { "description": "Repair request not found" }
+            }
+          }
+        },
+        "/repair/delete/{id}": {
+          "delete": {
+            "summary": "Delete a repair request",
+            "tags": ["Repair"],
+            "security": [{ "BearerAuth": [] }],
+            "parameters": [
+              { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+            ],
+            "responses": {
+              "200": { "description": "Repair request deleted successfully" },
+              "404": { "description": "Repair request not found" }
+            }
+          }
+        },
+        "/repair/status/{id}": {
+          "patch": {
+            "summary": "Update repair status",
+            "tags": ["Repair"],
+            "security": [{ "BearerAuth": [] }],
+            "parameters": [
+              { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+            ],
+            "requestBody": {
+              "required": true,
+              "content": {
+                "application/json": {
+                  "schema": { "$ref": "#/components/schemas/RepairStatusUpdate" }
+                }
+              }
+            },
+            "responses": {
+              "200": { "description": "Repair status updated successfully" },
+              "500": { "description": "Server error" }
+            }
+          }
+        },
+        "/user": {
+            "get": {
+              "summary": "ดึงผู้ใช้งานทั้งหมด",
+              "tags": ["Users"],
+              "security": [{ "BearerAuth": [] }],
+                "responses": {
+                    "200": { "description": "List of users" },
+                    "500": { "description": "Server error" }
+                }
+      
+            }
+          },
+          "/user/addUser": {
+            "post": {
+              "summary": "เพิ่มผู้ใช้งานใหม่",
+              "tags": ["Users"],
+              "security": [{ "BearerAuth": [] }],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                    "application/json": {
+                        "schema": { "$ref": "#/components/schemas/UserRequest" }
+                    }
+                    }
+                },          
+                "responses": {
+                    "201": { "description": "User added successfully" },
+                    "400": { "description": "Bad request" }
+                }
+            }
+          },
+          "/user/editUser/{id}": {
+            "put": {
+              "summary": "แก้ไขข้อมูลผู้ใช้งาน",
+              "tags": ["Users"],
+              "security": [{ "BearerAuth": [] }],
+              "parameters": [
+                { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+              ],
+         
+              "responses": {
+                "200": { "description": "user request updated successfully" },
+                "403": { "description": "Forbidden" },
+                "500": { "description": "Server error" }
+              }
+            }
+          },
+          "/user/{id}": {
+            "delete": {
+              "summary": "ลบข้อมูลของผู้ใช้งาน",
+              "tags": ["Users"],
+              "security": [{ "BearerAuth": [] }],
+                "parameters": [
+                    { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+                ],
+                "responses": {
+                    "200": { "description": "User deleted successfully" },
+                    "500": { "description": "Server error" }
+                }
+            }
+          },
+         
+          "/technician": {
+            "get": {
+              "summary": "ดึงรายชื่อช่างทั้งหมด",
+              "tags": ["Technician"],
+              "security": [{ "BearerAuth": [] }],
+                "responses": {
+                    "200": { "description": "List of technicians" },
+                    "500": { "description": "Server error" }
+                }
+               
+      
+            }
+          },
+          "/technician/add": {
+            "post": {
+              "summary": "เพิ่มช่างซ่อมใหม่",
+              "tags": ["Technician"],
+              "security": [{ "BearerAuth": [] }],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                    "application/json": {
+                        "schema": { "$ref": "#/components/schemas/UserRequest" }
+                    }
+                    }
+                },          
+                "responses": {
+                    "201": { "description": "Technician added successfully" },
+                    "400": { "description": "Bad request" }
+                }
+          
+            }
+          },
+          "/technician/editUser/{id}": {
+            "put": {
+              "summary": "แก้ไขข้อมูลข่างซ่อม",
+              "tags": ["Technician"],
+              "security": [{ "BearerAuth": [] }],
+                "parameters": [
+                    { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                    "application/json": {
+                        "schema": { "$ref": "#/components/schemas/UserRequestUpdate" }
+                    }
+                    }
+                },          
+                "responses": {
+                    "200": { "description": "Technician updated successfully" },
+                    "400": { "description": "Bad request" }
+            
+            }
+          }
+        },
+          "/technician/{id}": {
+            "delete": {
+              "summary": "ลบข้อมูลช่างซ่อม",
+              "tags": ["Technician"],
+              "security": [{ "BearerAuth": [] }],
+                "parameters": [
+                    { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+                ],
+                "responses": {
+                    "200": { "description": "technician deleted successfully" },
+                    "500": { "description": "Server error" }
+                }
+            }
+          },
+          "/asset": {
+            "get": {
+              "summary": "ดึงรายการสินทรัพย์ทั้งหมด",
+              "tags": ["Assets"],
+              "security": [{ "BearerAuth": [] }],
+                "responses": {
+                    "200": { "description": "List of technicians" },
+                    "500": { "description": "Server error" }
+                }
+               
+      
+            }
+          },
+          "/asset/add": {
+            "post": {
+              "summary": "เพิ่มรายการสินทรัพย์ใหม่",
+              "tags": ["Assets"],
+              "security": [{ "BearerAuth": [] }],
+                   
+                "responses": {
+                    "201": { "description": "Technician added successfully" },
+                    "400": { "description": "Bad request" }
+                }
+          
+            }
+          },
+          "/asset/edit/{id}": {
+            "put": {
+              "summary": "แก้ไขข้อมูลรายการสินทรัพย์",
+              "tags": ["Assets"],
+              "security": [{ "BearerAuth": [] }],
+                "parameters": [
+                    { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+                ],
+                   
+                "responses": {
+                    "200": { "description": "Technician updated successfully" },
+                    "400": { "description": "Bad request" }
+            
+            }
+          }
+        },
+          "/asset/{id}": {
+            "delete": {
+              "summary": "ลบข้อมูลช่างซ่อม",
+              "tags": ["Assets"],
+              "security": [{ "BearerAuth": [] }],
+                "parameters": [
+                    { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+                ],
+                "responses": {
+                    "200": { "description": " deleted asset successfully" },
+                    "500": { "description": "Server error" }
+                }
+            }
+          },
+          "/review/reviewTechnician": {
+            "get": {
+              "summary": "ดึงคะแนนการให้บริการของช่างซ่อมทั้งหมด",
+              "tags": ["Review"],
+              "security": [{ "BearerAuth": [] }],
+                "responses": {
+                    "200": { "description": "List of technicians" },
+                    "500": { "description": "Server error" }
+                }
+               
+      
+            }
+          },
+          "/review/rate": {
+            "post": {
+              "summary": "ให้คะแนนการให้บริการของช่างซ่อม",
+              "tags": ["Review"],
+              "security": [{ "BearerAuth": [] }],
+                   
+                "responses": {
+                    "201": { "description": "Technician added successfully" },
+                    "400": { "description": "Bad request" }
+                }
+          
+            }
+          },
+          "/review/edit/{id}": {
+            "put": {
+              "summary": "แก้ไขคะแนนการให้บริการของช่างซ่อม",    
+                "tags": ["Review"],
+                "security": [{ "BearerAuth": [] }],
+                "parameters": [
+                    { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+                ],
+
+                "responses": {
+                    "200": { "description": "Technician updated successfully" },
+                    "400": { "description": "Bad request" }
+            
+            }
+          }
+        },
+        "/report/summary": {
+            "get": {
+              "summary": "สรุปข้อมูลที่สำคัญ",
+              "tags": ["Report"],
+              "security": [{ "BearerAuth": [] }],
+                "responses": {
+                    "200": { "description": "List of technicians" },
+                    "500": { "description": "Server error" }
+                }
+               
+      
+            }
+          },
+          "/report/statistics": {
+            "get": {
+              "summary": "สรุปข้อมูลสถิติ",
+              "tags": ["Report"],
+              "security": [{ "BearerAuth": [] }],
+                "responses": {
+                    "200": { "description": "List of technicians" },
+                    "500": { "description": "Server error" }
+                }
+               
+      
+            }
+          }
+      },
+    "components": {
+      "securitySchemes": {
+        "BearerAuth": {
+          "type": "http",
+          "scheme": "bearer",
+          "bearerFormat": "JWT"
+        }
+      },
+      "schemas": {
+        "RegisterRequest": {
+          "type": "object",
+          "properties": {
+            "userName": { "type": "string", "example": "ทดสอบ13" },
+            "fullName": { "type": "string", "example": "ทดสอบ13 ระบบ" },
+            "email": { "type": "string", "example": "user13@gmail.com" },
+            "password": { "type": "string", "example": "user13" },
+            "departmentId": { "type": "integer", "example": 5 },
+            "role": { "type": "string", "example": "USER" }
+          }
+        },
+        "LoginRequest": {
+          "type": "object",
+          "properties": {
+            "email": { "type": "string", "example": "user13@gmail.com" },
+            "password": { "type": "string", "example": "user13" }
+          }
+        },
+        "LoginResponse": {
+          "type": "object",
+          "properties": {
+            "message": { "type": "string", "example": "Login successful" },
+            "token": { "type": "string", "example": "jwt_token_here" }
+          }
+        },
+        "AddRepairRequest": {
+          "type": "object",
+          "properties": {
+            "departmentId": { "type": "string", "example": "3" },
+            "building": { "type": "string", "example": "1" },
+            "floor": { "type": "string", "example": "4" },
+            "assetName": { "type": "string", "example": "เก้าอี้" },
+            "assetSerial": { "type": "string", "example": "A-123" },
+            "assetLocation": { "type": "string", "example": "ห้องประชุม อาคาร 2 ชั้น 1" },
+            "detailRepair": { "type": "string", "example": "เก้าอี้ หัก" },
+            "importance": { "type": "string", "example": "ปานกลาง" },
+            "status": { "type": "string", "example": "รอเดินการ" },
+            "images": {
+              "type": "array",
+              "items": { "type": "string" },
+              "example": ["imageUrl1", "imageUrl2", "imageUrl3"]
+            }
+          }
+        },
+        "EditRepairRequest": {
+          "type": "object",
+          "properties": {
+            "departmentId": { "type": "string", "example": "3" },
+            "building": { "type": "string", "example": "9" },
+            "floor": { "type": "string", "example": "9" },
+            "assetName": { "type": "string", "example": "เก้าอี้" },
+            "assetSerial": { "type": "string", "example": "A-123" },
+            "assetLocation": { "type": "string", "example": "ห้องประชุม อาคาร 2 ชั้น 1" },
+            "detailRepair": { "type": "string", "example": "เก้าอี้ หัก" },
+            "importance": { "type": "string", "example": "ปานกลาง" },
+            "status": { "type": "string", "example": "รอเดินการ" },
+            "images": {
+              "type": "array",
+              "items": { "type": "string" },
+              "example": ["imageUrl1", "imageUrl2", "imageUrl3"]
+            }
+          }
+        }
+      }
+    }
+  }
+  

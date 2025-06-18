@@ -1,0 +1,208 @@
+// This is your Prisma schema file
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// ผู้ใช้งานระบบ บันทึกข้อมูลผู้ใช้งานระบบ เช่น ชื่อผู้ใช้งาน รหัสผ่าน ชื่อเต็ม อีเมล แผนก บทบาท วันที่สร้าง
+model User {
+  userId       Int        @id @default(autoincrement()) @map("user_id")
+  userName     String     @map("user_name")
+  password     String
+  fullName     String     @map("full_name")
+  email        String     @unique
+  role         Role // USER, TECHNICIAN, ADMIN
+  departmentId Int        @map("department_id") // รหัสแผนก
+  department   Department @relation(fields: [departmentId], references: [departmentId]) // แผนกที่เกี่ยวข้อง
+  createdAt    DateTime   @default(now()) @map("created_at")
+
+  // ความสัมพันธ์
+  assets              UserAsset[] // ทรัพย์สินที่ถือครอง
+  repair_requests     RepairRequest[] @relation("RequestCreator") // ผู้สร้างคำขอแจ้งซ่อม
+  inspected_repairs   RepairRequest[] @relation("RepairInspector") // ผู้ตรวจสอบการซ่อม
+  decided_repairs     RepairRequest[] @relation("RepairDecider") // ผู้ตัดสินใจเกี่ยวกับการซ่อม
+  checked_out_repairs RepairRequest[] @relation("RepairCheckout") // ผู้เช็คเอาท์การซ่อม
+  updated_repairs     RepairRequest[] @relation("RepairUpdater") // ผู้แก้ไขสถานะซ่อม
+  
+     @@index([userName]) // สร้าง index บนฟิลด์ userName (จะใช้ชื่อคอลัมน์ที่ map ไว้คือ user_name ใน DB)
+    
+    @@map("users")
+}
+
+model Department {
+  departmentId    Int             @id @default(autoincrement()) @map("department_id")
+  departmentName  String          @map("department_name") // ชื่อแผนก
+  users           User[] // ผู้ใช้งานในแผนก
+  repair_requests RepairRequest[] // การแจ้งซ่อมที่เกี่ยวข้องกับแผนก
+  created_at      DateTime        @default(now()) // วันที่สร้าง
+  updated_at      DateTime?       // วันที่แก้ไขล่าสุด
+  created_by      Int?            // รหัสผู้สร้าง
+
+  @@map("departments")
+}
+
+// model Department {
+//   departmentId    Int             @id @default(autoincrement()) @map("department_id")
+//   departmentCode  String          @map("department_code") // ✅ รหัสแผนก เช่น MKT, FIN
+//   departmentName  String          @map("department_name") // ชื่อแผนก
+//   location        String          @map("location") // ✅ สถานที่ เช่น Building A, ชั้น 3
+//   employeeCount   Int             @map("employee_count") // ✅ จำนวนพนักงาน
+//   headOfDept      String          @map("head_of_department") // ✅ ชื่อหัวหน้าแผนก
+//   created_at      DateTime        @default(now()) // วันที่สร้าง
+//   updated_at      DateTime?       // วันที่แก้ไขล่าสุด
+//   created_by      Int?            // รหัสผู้สร้าง
+
+//   users           User[] // ผู้ใช้งานในแผนก
+//   repair_requests RepairRequest[] // การแจ้งซ่อมที่เกี่ยวข้องกับแผนก
+
+//   @@map("departments")
+// }
+
+
+
+// บทบาทของผู้ใช้งาน
+enum Role {
+  USER
+  TECHNICIAN
+  ADMIN
+}
+
+// ทรัพย์สิน
+model Asset {
+  assetId         Int              @id @default(autoincrement()) @map("asset_id")
+  assetCode       String?          @default("") @map("asset_code") // รหัสทรัพย์สิน (optional)
+  assetName       String           @map("asset_name") // ชื่อทรัพย์สิน (required)
+  assetSerial     String           @map("asset_serial_number") // หมายเลขทรัพย์สิน (required)
+  assetType       String?          @map("asset_type") // ประเภท (Software, Hardware) (optional)
+  assetLocation   String           @map("asset_location") // สถานที่ตั้งสินทรัพย์ (required)
+  manufacturer    String? // ผู้ผลิต (optional)
+  model           String? // รุ่น (optional)
+  purchaseDate    DateTime?        @map("purchase_date") // วันที่ซื้อ (optional)
+  warrantyExpire  DateTime?        @map("warranty_expire") // วันที่หมดประกัน (optional)
+  specification   String? // รายละเอียดทางเทคนิค (optional)
+  status          AssetStatus // สถานะของทรัพย์สิน (required)
+  created_at      DateTime         @default(now()) // วันที่สร้าง (required)
+  components      AssetComponent[] // อุปกรณ์เสริมของทรัพย์สิน
+  user_assets     UserAsset[]
+  repair_requests RepairRequest[]
+
+  @@map("assets")
+}
+
+enum AssetStatus {
+  AVAILABLE // ทรัพย์สินที่พร้อมใช้งาน
+  IN_USE // ทรัพย์สินที่กำลังถูกใช้งาน
+  UNDER_REPAIR // ทรัพย์สินที่อยู่ระหว่างการซ่อม
+  DISPOSED // ทรัพย์สินที่ถูกจำหน่ายออก
+}
+
+// อุปกรณ์เสริมของทรัพย์สิน
+model AssetComponent {
+  id            Int       @id @default(autoincrement())
+  assetId       Int       @map("asset_id") // รหัสทรัพย์สิน
+  componentType String    @map("component_type") // ประเภท (Software, Hardware)
+  name          String    @map("asset_component_name") // ชื่อของอุปกรณ์เสริม
+  description   String // คำอธิบาย
+  expireDate    DateTime? @map("expire_date") // วันที่หมดอายุ (ถ้ามี)
+
+  asset Asset @relation(fields: [assetId], references: [assetId], onDelete: Cascade) // ทรัพย์สินที่เกี่ยวข้อง
+
+  @@map("asset_components")
+}
+
+// การถือครองทรัพย์สินของผู้ใช้
+model UserAsset {
+  id           Int       @id @default(autoincrement())
+  userId       Int       @map("user_id") // รหัสผู้ใช้งาน
+  assetId      Int       @map("asset_id") // รหัสทรัพย์สิน
+  startOwnedAt DateTime  @map("start_owned_at") // วันที่เริ่มถือครอง
+  endOwnedAt   DateTime? @map("end_owned_at") // วันที่สิ้นสุดการถือครอง (ถ้ามี)
+
+  user  User  @relation(fields: [userId], references: [userId], onDelete: Cascade) // ผู้ใช้งานที่ถือครองทรัพย์สิน
+  asset Asset @relation(fields: [assetId], references: [assetId] , onDelete: Cascade) // ทรัพย์สินที่ถูกถือครอง
+
+  @@map("user_assets")
+}
+
+//รูปภาพที่อัปโหลดเพื่อส่งซ่อมภายนอก
+model RepairImage {
+  imageId        Int           @id @default(autoincrement()) @map("image_id")
+  requestId      Int           @map("request_id") // รหัสการแจ้งซ่อม
+  imageUrl       String        @map("image_url") @db.Text // URL ของรูปภาพ
+  type           ImageType     @map("image_type") // ประเภทของรูปภาพ (Internal, External) 
+  uploadedAt     DateTime      @default(now()) @map("uploaded_at") // วันที่อัปโหลด
+  repair_request RepairRequest @relation(fields: [requestId], references: [requestId] , onDelete: Cascade) // การแจ้งซ่อมที่เกี่ยวข้อง
+
+  @@map("repair_images")
+}
+
+//ระยะเวลาซ่อม กำหนดระยะเวลาการซ่อม เช่น "3 วัน", "1 สัปดาห์", "1 เดือน"
+model Duration {
+  durationId      Int             @id @default(autoincrement()) @map("duration_id")
+  timePeriod      String          @map("time_period") // ระยะเวลาการซ่อม
+  repair_requests RepairRequest[]
+}
+
+//การแจ้งซ่อมใหม่
+model RepairRequest {
+  requestId               Int              @id @default(autoincrement()) @map("request_id")
+  createdBy               Int              @map("created_by") // รหัสผู้สร้างคำขอ
+  creator                 User             @relation("RequestCreator", fields: [createdBy], references: [userId]) // ผู้สร้างคำขอ
+  assetId                 Int?             @map("asset_id") // รหัส id ทรัพย์สิน
+  detail                  String // รายละเอียดการแจ้งซ่อม
+  building                String // อาคารที่เกี่ยวข้อง
+  floor                   String // ชั้นที่เกี่ยวข้อง
+  location                String? // สถานที่ที่เกี่ยวข้อง
+  importance              ImportanceRepair // ความสำคัญของการแจ้งซ่อม
+  durationId              Int?             @map("duration_id") // ระยะเวลาการซ่อม
+  departmentId            Int?             @map("department_id") // รหัสแผนกที่เกี่ยวข้อง
+  status                  RepairStatus // สถานะของการแจ้งซ่อม
+  created_at              DateTime         @default(now()) // วันที่แจ้งซ่อม
+  updated_by              Int? // รหัสผู้แก้ไขล่าสุด
+  updater                 User?            @relation("RepairUpdater", fields: [updated_by], references: [userId]) // ผู้แก้ไขล่าสุด
+  updated_at              DateTime? // วันที่แก้ไขล่าสุด
+  cause                   String? // สาเหตุของปัญหา
+  solution                String? // รายละเอียดการซ่อมหรืออะไหล่ที่เปลี่ยน
+  inspected_at            DateTime? // วันที่ตรวจสอบ
+  inspected_by            Int? // รหัสผู้ตรวจสอบ
+  inspector               User?            @relation("RepairInspector", fields: [inspected_by], references: [userId]) // ผู้ตรวจสอบ หรือ ช่างซ่อม
+  decide_id               Int? // ผู้จัดการฝ่ายผลิตที่อนุมัติ
+  decider                 User?            @relation("RepairDecider", fields: [decide_id], references: [userId]) // ผู้ตัดสินใจ
+  decide_cause            String? // เหตุผลในการตัดสินใจ
+  checkout_at             DateTime? // วันที่เสร็จสิ้นการซ่อม
+  checkout_by             Int? // รหัสผู้ทำการเช็คเอาท์
+  checker                 User?            @relation("RepairCheckout", fields: [checkout_by], references: [userId]) // ผู้ทำการเช็คเอาท์
+  is_approved_outsource   Boolean? // อนุมัติส่งซ่อมภายนอก
+  reject_outsource_reason String? // เหตุผลที่ปฏิเสธการส่งซ่อมภายนอก
+  images                  RepairImage[] // ความสัมพันธ์กับรูปภาพทั้งหมด
+
+  asset      Asset?      @relation(fields: [assetId], references: [assetId]) // ทรัพย์สินที่เกี่ยวข้อง
+  duration   Duration?   @relation(fields: [durationId], references: [durationId]) // ระยะเวลาการซ่อม
+  department Department? @relation(fields: [departmentId], references: [departmentId]) // แผนกที่เกี่ยวข้อง
+
+  @@map("repair_requests")
+}
+
+enum ImageType {
+  INTERNAL
+  EXTERNAL
+}
+
+enum ImportanceRepair {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+// สถานะของการซ่อม
+enum RepairStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
