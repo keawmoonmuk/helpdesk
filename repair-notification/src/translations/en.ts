@@ -1,0 +1,172 @@
+
+const enTranslations = {
+  // Login Page
+  "login.title": "Repair Notification System",
+  "login.subtitle": "Sign in to your account",
+  "login.email": "Email",
+  "login.username": "Username",
+  "login.password": "Password",
+  "login.rememberMe": "Remember me",
+  "login.forgotPassword": "Forgot password?",
+  "login.signIn": "Sign In",
+  "login.signingIn": "Signing In...",
+  "login.noAccount": "Don't have an account?",
+  "login.signUp": "Sign up",
+  "login.usernamePlaceholder": "Enter your username",
+  "login.passwordPlaceholder": "Enter your password",
+  
+  
+  // Register Page
+  "register.title": "Create an Account",
+  "register.subtitle": "Sign up to get started",
+  "register.username": "Username",
+  "register.usernamePlaceholder": "Enter your username",
+  "register.fullName": "Full Name",
+  "register.fullNamePlaceholder": "Enter your full name",
+  "register.email": "Email",
+  "register.emailPlaceholder": "Enter your email",
+  "register.password": "Password",
+  "register.passwordPlaceholder": "Enter your password",
+  "register.department": "Department",
+  "register.departmentPlaceholder": "Enter your department",
+  "register.role": "Role",
+  "register.roleUser": "User",
+  "register.roleTechnician": "Technician",
+  "register.roleAdmin": "Admin",
+  "register.processing": "Creating Account...",
+  "register.signUp": "Sign Up",
+  "register.haveAccount": "Already have an account?",
+  "register.signIn": "Sign in",
+  
+  // Index Page
+  "index.title": "Online Repair Notification System",
+  "index.subtitle": "Efficiently manage and track repair requests",
+  "index.login": "Login",
+  "index.register": "Register",
+  "index.troubleAccess": "Having trouble accessing your account?",
+  "index.resetPassword": "Reset your password",
+  
+  // Forgot Password Page
+  "forgotPassword.title": "Forgot Password?",
+  "forgotPassword.subtitle": "Enter your email to reset your password",
+  "forgotPassword.email": "Email",
+  "forgotPassword.resetPassword": "Reset Password",
+  "forgotPassword.backToLogin": "Back to login",
+  "forgotPassword.processing": "Processing...",
+  
+  // Sidebar
+  "sidebar.dashboard": "Dashboard",
+  "sidebar.myTasks": "My Tasks",
+  "sidebar.notifications": "Notifications",
+  "sidebar.schedule": "Schedule",
+  "sidebar.reports": "Reports",
+  "sidebar.settings": "Settings",
+  "sidebar.loggedInAs": "Logged in as",
+  "sidebar.user": "User",
+  "sidebar.role": "Role",
+  "sidebar.role.admin": "Administrator",
+  "sidebar.role.technician": "Technician",
+  "sidebar.role.user": "User",
+  "sidebar.logout": "Logout",
+  "sidebar.repairNotify": "RepairNotify",
+  
+  // Dashboard Stats
+  "dashboard.activeRepairs": "Active Repairs",
+  "dashboard.completedToday": "Completed Today",
+  "dashboard.pending": "Pending",
+  "dashboard.urgent": "Urgent",
+  
+  // Dashboard Admin
+  "dashboard.title": "Dashboard - Repair Notification System",
+  "dashboard.technicianDashboard": "Technician Dashboard",
+  "dashboard.userDashboard": "User Dashboard",
+  "dashboard.repairRequests": "Repair Requests",
+  "dashboard.addRepairRequest": "Add Repair Request",
+  "dashboard.requestId": "REQUEST ID",
+  "dashboard.problemDetails": "PROBLEM DETAILS",
+  "dashboard.reporter": "REPORTER",
+  "dashboard.technician": "TECHNICIAN",
+  "dashboard.status": "STATUS",
+  "dashboard.dateReported": "DATE REPORTED",
+  "dashboard.management": "MANAGEMENT",
+  "dashboard.noRepairRequests": "No repair requests found",
+  "dashboard.errorLoadingData": "Failed to load dashboard data",
+  "dashboard.requestDeleted": "The repair request has been deleted.",
+  "dashboard.errorDeletingRequest": "Failed to delete the repair request",
+  
+  // Dashboard Technician
+  "dashboard.recentWorkOrders": "Recent Work Orders",
+  "dashboard.task": "TASK",
+  "dashboard.priority": "PRIORITY",
+  "dashboard.actions": "ACTIONS",
+  "dashboard.noWorkOrders": "No work orders found",
+  "dashboard.repairRequestsByUser": "Repair Requests by User",
+  "dashboard.noRepairRequestsFromUsers": "No repair requests from users found",
+  
+  // Dashboard User
+  "dashboard.recentNotifications": "Recent Notifications",
+  "dashboard.newRepairNotification": "New Repair Notification",
+  "dashboard.titleColumn": "TITLE", // Changed from title to titleColumn
+  "dashboard.date": "DATE",
+  "dashboard.noNotifications": "No notifications found",
+  
+  // Add Repair Request Modal
+  "addRepair.title": "New Repair Notification",
+  "addRepair.instructions": "Please fill in all the required information",
+  "addRepair.dateOfRepair": "Date of Repair",
+  "addRepair.reporterName": "Reporter Name",
+  "addRepair.reporterNamePlaceholder": "Enter full name",
+  "addRepair.department": "Department",
+  "addRepair.departmentPlaceholder": "e.g., Accounting",
+  "addRepair.building": "Building",
+  "addRepair.buildingPlaceholder": "e.g., Building 1",
+  "addRepair.floor": "Floor",
+  "addRepair.floorPlaceholder": "e.g., 2nd Floor",
+  "addRepair.propertyName": "Property Name",
+  "addRepair.propertyNumber": "Property Number",
+  "addRepair.machineNumber": "Machine Number",
+  "addRepair.propertyAddress": "Property Address",
+  "addRepair.priority": "Priority",
+  "addRepair.repairDetails": "Repair Details",
+  "addRepair.repairDetailsPlaceholder": "Please provide detailed information about the required repairs",
+  "addRepair.cancel": "Cancel",
+  "addRepair.submit": "Submit Notification",
+  "addRepair.processing": "Processing...",
+  "addRepair.successMessage": "Your repair notification has been submitted successfully",
+  "addRepair.errorMessage": "Failed to submit repair notification",
+  
+  // Status and Priority
+  "status.completed": "Completed",
+  "status.inProgress": "In Progress",
+  "status.pending": "Pending",
+  "priority.low": "Low",
+  "priority.medium": "Medium",
+  "priority.high": "High",
+  
+  // Language Switcher
+  "language.thai": "Thai",
+  "language.english": "English",
+  
+  // Common
+  "common.language": "Language",
+  "common.loading": "Loading...",
+  "common.error": "Error",
+  "common.success": "Success",
+  "common.cancel": "Cancel",
+  "common.save": "Save",
+  "common.delete": "Delete",
+  "common.edit": "Edit",
+  "common.view": "View",
+  "common.close": "Close",
+  "common.confirm": "Confirm",
+  "common.back": "Back",
+  "common.next": "Next",
+  "common.submit": "Submit",
+  "common.welcome": "Welcome",
+  "common.areYouSure": "Are you sure?",
+  "common.cantRevert": "You won't be able to revert this!",
+  "common.yesDelete": "Yes, delete it!",
+  "common.deleted": "Deleted!"
+};
+
+export default enTranslations;
