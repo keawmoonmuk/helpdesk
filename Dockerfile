@@ -15,6 +15,7 @@ COPY server/ .
 
 # กำหนดให้ Prisma สร้าง client (หากใช้ Prisma)
 RUN npx prisma generate
+RUN npx prisma migrate deploy
 
 # เปิดพอร์ต (ต้องตรงกับที่ server.js ใช้ เช่น 5000)
 EXPOSE 5000
