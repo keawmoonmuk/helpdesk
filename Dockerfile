@@ -7,11 +7,14 @@ WORKDIR /app
 # คัดลอกไฟล์ package.json และ package-lock.json (ถ้ามี)
 COPY server/package*.json ./
 
+# คัดลอก prisma schema และ migration ก่อน install dependencies (เพื่อให้ postinstall หา schema.prisma เจอ)
+COPY server/prisma ./prisma
+
 # ติดตั้ง dependencies
 RUN npm install
 
-# คัดลอก source code ทั้งหมดของ backend (จากโฟลเดอร์ server)
-COPY server/ .
+# คัดลอก source code ทั้งหมดของ backend (ยกเว้น prisma ที่ copy ไปแล้ว)
+COPY server/. .
 
 # กำหนดให้ Prisma สร้าง client (หากใช้ Prisma)
 RUN npx prisma generate

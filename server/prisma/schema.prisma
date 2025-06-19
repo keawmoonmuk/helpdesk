@@ -6,7 +6,7 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = env("MYSQL_URL")
+  url      = env("DATABASE_URL")
 }
 
 // ผู้ใช้งานระบบ บันทึกข้อมูลผู้ใช้งานระบบ เช่น ชื่อผู้ใช้งาน รหัสผ่าน ชื่อเต็ม อีเมล แผนก บทบาท วันที่สร้าง
