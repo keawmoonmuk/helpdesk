@@ -73,7 +73,7 @@ const AddUser = () => {
       
       console.log('Submitting user data:', userData);
       
-      const response = await fetch('http://localhost:5000/api/admin/user', {
+      const response = await fetch('https://helpdesk-production-51fe.up.railway.app/api/admin/user', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
